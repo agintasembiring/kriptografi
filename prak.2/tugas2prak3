@@ -1,0 +1,62 @@
+import tkinter as tk
+from tkinter import messagebox
+import math
+
+# Fungsi perhitungan
+def hitung_permutasi():
+    try:
+        n = int(entry_n.get())
+        r = int(entry_r.get() or 0)
+        jenis = var_jenis.get()
+
+        if jenis == "Menyeluruh":
+            hasil = math.factorial(n)
+        elif jenis == "Sebagian":
+            hasil = math.factorial(n) // math.factorial(n - r)
+        elif jenis == "Keliling":
+            hasil = math.factorial(n - 1)
+        elif jenis == "Data Berkelompok":
+            kelompok = entry_kelompok.get().strip()
+            if not kelompok:
+                messagebox.showwarning("Peringatan", "Masukkan data kelompok, misal: 2,3,2")
+                return
+            data = [int(x) for x in kelompok.split(",")]
+            penyebut = math.prod(math.factorial(k) for k in data)
+            hasil = math.factorial(n) // penyebut
+        else:
+            hasil = "Pilih jenis permutasi"
+
+        label_hasil.config(text=f"Hasil: {hasil}")
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Terjadi kesalahan: {e}")
+
+# GUI utama
+root = tk.Tk()
+root.title("Kalkulator Permutasi")
+root.geometry("400x350")
+
+# Input
+tk.Label(root, text="Masukkan n:").pack()
+entry_n = tk.Entry(root)
+entry_n.pack()
+
+tk.Label(root, text="Masukkan r (jika perlu):").pack()
+entry_r = tk.Entry(root)
+entry_r.pack()
+
+tk.Label(root, text="Pilih jenis permutasi:").pack()
+var_jenis = tk.StringVar(value="Menyeluruh")
+opsi = ["Menyeluruh", "Sebagian", "Keliling", "Data Berkelompok"]
+for o in opsi:
+    tk.Radiobutton(root, text=o, variable=var_jenis, value=o).pack(anchor="w")
+
+tk.Label(root, text="Masukkan ukuran kelompok (pisahkan dengan koma):").pack()
+entry_kelompok = tk.Entry(root)
+entry_kelompok.pack()
+
+tk.Button(root, text="Hitung", command=hitung_permutasi).pack(pady=10)
+label_hasil = tk.Label(root, text="Hasil: ")
+label_hasil.pack()
+
+root.mainloop()
